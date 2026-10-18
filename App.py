@@ -1,209 +1,145 @@
 
 import streamlit as st
+import pandas as pd
 
 st.set_page_config(
     page_title="Trading Star Quant Lab",
-    page_icon="📈",
+    page_icon="⭐",
     layout="wide"
 )
 
-st.title("📈 Trading Star Quant Lab")
-st.subheader("NIFTY Breakout Confirmation Lab")
+st.title("⭐ Trading Star Quant Lab")
+st.caption("Market Analysis • Risk Management • Trading Education")
 
-st.info(
-    "Educational analysis tool. Enter your chart observations "
-    "manually. This app does not use live market data."
+st.warning(
+    "DEMO MODE — Values are illustrative, not live market data. "
+    "Do not use demo values to place real trades."
 )
 
-st.divider()
+page = st.sidebar.radio(
+    "Select Module",
+    [
+        "Dashboard",
+        "NIFTY 50 Analysis",
+        "Stock Scanner",
+        "Option Chain",
+        "XAUUSD Gold Analysis",
+        "Risk Calculator"
+    ]
+)
 
-# 1. Market levels
-st.header("1. Market Levels")
+st.sidebar.info("Live market data is not connected.")
 
-col1, col2, col3 = st.columns(3)
+if page == "Dashboard":
+    st.header("Professional Trading Dashboard")
+    a, b, c = st.columns(3)
+    a.metric("NIFTY 50", "DEMO")
+    b.metric("XAUUSD Gold", "DEMO")
+    c.metric("Market Status", "Not Connected")
 
-with col1:
-    support = st.number_input(
-        "Support Level",
-        min_value=0.0,
-        value=24980.0,
-        step=10.0
+    st.subheader("Analysis Modules")
+    st.markdown(
+        "- **NIFTY 50:** Index chart and market structure\n"
+        "- **Stock Scanner:** Breakout and trend checklist\n"
+        "- **Option Chain:** CE/PE, OI, PCR and Max Pain layout\n"
+        "- **Gold Analysis:** Liquidity sweep, FVG, OB, BOS/CHOCH\n"
+        "- **Risk Calculator:** Entry, stop-loss, target and risk/reward"
     )
 
-with col2:
-    resistance = st.number_input(
-        "Resistance Level",
-        min_value=0.0,
-        value=25100.0,
-        step=10.0
-    )
-
-with col3:
-    price = st.number_input(
-        "Current / Entry Price",
-        min_value=0.0,
-        value=25120.0,
-        step=10.0
-    )
-
-st.divider()
-
-# 2. Confirmation checklist
-st.header("2. Breakout Confirmation Checklist")
-st.caption(
-    "Chart-ஐப் பார்த்து உண்மையான நிலைக்கு ஏற்ப check செய்யவும்."
-)
-
-candle_close = st.checkbox(
-    "✅ Candle Resistance-க்கு மேலே close ஆகியுள்ளது"
-)
-
-volume_confirm = st.checkbox(
-    "✅ Breakout candle-ல் volume அதிகரித்துள்ளது"
-)
-
-retest_confirm = st.checkbox(
-    "✅ Retest-ல் பழைய Resistance support ஆகத் தாங்கியுள்ளது"
-)
-
-st.divider()
-
-# 3. Risk reward calculator
-st.header("3. Risk / Reward Check")
-
-col4, col5 = st.columns(2)
-
-with col4:
-    stop_loss = st.number_input(
-        "Stop-Loss Price",
-        min_value=0.0,
-        value=25080.0,
-        step=10.0
-    )
-
-with col5:
-    target = st.number_input(
-        "Target Price",
-        min_value=0.0,
-        value=25200.0,
-        step=10.0
-    )
-
-st.caption(
-    "Risk/Reward கணக்கு Entry Price, Stop-Loss மற்றும் Target "
-    "அடிப்படையில் செய்யப்படும். Brokerage, slippage மற்றும் "
-    "Options premium மாற்றங்கள் இதில் சேர்க்கப்படவில்லை."
-)
-
-st.divider()
-
-# 4. Analyze
-if st.button("🔍 Analyze Breakout", use_container_width=True):
-
-    if support >= resistance:
-        st.error("Invalid levels: Support must be below Resistance.")
-
-    elif price <= 0 or stop_loss <= 0 or target <= 0:
-        st.error("Price, Stop-Loss and Target must be above zero.")
-
-    elif stop_loss >= price:
-        st.error(
-            "For a bullish breakout calculation, Stop-Loss "
-            "must be below the Entry Price."
-        )
-
-    elif target <= price:
-        st.error(
-            "For a bullish breakout calculation, Target "
-            "must be above the Entry Price."
-        )
-
+elif page == "NIFTY 50 Analysis":
+    st.header("NIFTY 50 Analysis")
+    st.info("Demo mode: No live index feed is connected.")
+    support = st.number_input("Support", value=24980.0)
+    resistance = st.number_input("Resistance", value=25100.0)
+    price = st.number_input("Current / Entry Price", value=25050.0)
+    candle_close = st.checkbox("Candle closed above resistance?")
+    volume = st.checkbox("Volume confirmation available?")
+    retest = st.checkbox("Breakout retest held?")
+    score = sum([candle_close, volume, retest])
+    st.progress(score / 3)
+    st.write(f"Checklist confirmation: {score}/3")
+    if score == 3:
+        st.success("Checklist complete — verify with real market data.")
+    elif price > resistance:
+        st.info("Price is above resistance; wait for confirmations.")
     else:
-        risk_points = price - stop_loss
-        reward_points = target - price
-        rr_ratio = reward_points / risk_points
+        st.info("No confirmed breakout from these inputs.")
 
-        st.header("4. Analysis Result")
+elif page == "Stock Scanner":
+    st.header("NIFTY 50 Stock Scanner")
+    st.info("Illustrative checklist only. No live stock prices are loaded.")
+    symbol = st.selectbox(
+        "Example stock",
+        ["RELIANCE", "HDFCBANK", "ICICIBANK", "INFY", "TCS"]
+    )
+    trend = st.selectbox("Trend", ["Bullish", "Bearish", "Sideways"])
+    breakout = st.checkbox("Breakout candle confirmed?")
+    vol_confirm = st.checkbox("Volume confirmation checked?")
+    st.write("Selected stock:", symbol)
+    st.write("Selected trend:", trend)
+    st.write("Breakout checklist:", "Complete" if breakout and vol_confirm else "Pending")
 
-        # Check price and candle close
-        price_above_resistance = price > resistance
+elif page == "Option Chain":
+    st.header("NIFTY Option Chain")
+    st.info("Demo layout only — no live option-chain values.")
+    st.caption("Use verified live data before making any options decision.")
+    df = pd.DataFrame({
+        "Strike": [25000, 25050, 25100],
+        "CE OI": ["Demo", "Demo", "Demo"],
+        "CE Change OI": ["Demo", "Demo", "Demo"],
+        "PE OI": ["Demo", "Demo", "Demo"],
+        "PE Change OI": ["Demo", "Demo", "Demo"]
+    })
+    st.dataframe(df, use_container_width=True)
+    st.write("PCR: Demo | IV: Demo | Max Pain: Demo")
 
-        if not price_above_resistance:
-            st.warning(
-                "⏳ Price is not above Resistance. "
-                "A bullish breakout is not confirmed by price alone."
-            )
+elif page == "XAUUSD Gold Analysis":
+    st.header("XAUUSD Gold Analysis")
+    st.info("Gold live price and broker feed are not connected.")
+    tf = st.selectbox(
+        "Timeframe",
+        ["1 Minute", "5 Minutes", "15 Minutes", "30 Minutes", "1 Hour", "4 Hours", "Daily"]
+    )
+    st.write("Selected timeframe:", tf)
+    concepts = [
+        "Liquidity sweep observed?",
+        "Fair Value Gap (FVG) identified?",
+        "Order Block (OB) identified?",
+        "Break of Structure (BOS) confirmed?",
+        "Change of Character (CHOCH) confirmed?",
+        "Candle-close confirmation present?"
+    ]
+    checks = [st.checkbox(item) for item in concepts]
+    st.write(f"Checklist: {sum(checks)}/{len(checks)} confirmed")
+    st.caption("These are manual observations, not automated market signals.")
 
-        elif not candle_close:
-            st.warning(
-                "⚠️ Price is above Resistance, but candle-close "
-                "confirmation has not been checked."
-            )
+elif page == "Risk Calculator":
+    st.header("Trade Risk Calculator")
+    capital = st.number_input("Account capital ($)", min_value=0.0, value=1000.0)
+    risk_pct = st.number_input(
+        "Risk per trade (%)", min_value=0.1, max_value=10.0, value=1.0
+    )
+    entry = st.number_input("Entry price", min_value=0.0, value=100.0)
+    sl = st.number_input("Stop-loss price", min_value=0.0, value=98.0)
+    target = st.number_input("Target price", min_value=0.0, value=104.0)
 
-        else:
-            st.success(
-                "Price is above Resistance and candle-close "
-                "confirmation is checked."
-            )
+    risk_amount = capital * risk_pct / 100
+    price_risk = abs(entry - sl)
+    reward = abs(target - entry)
 
-        # Checklist progress
-        checks = [
-            price_above_resistance,
-            candle_close,
-            volume_confirm,
-            retest_confirm
-        ]
-
-        completed = sum(checks)
-
-        st.subheader("Confirmation Progress")
-        st.progress(completed / len(checks))
-        st.write(f"Checklist completed: {completed} / 4")
-
-        if completed == 4:
-            st.success(
-                "All checklist items are marked complete. "
-                "Review the chart and risk before making any decision."
-            )
-
-        elif completed >= 2:
-            st.info(
-                "Some confirmations are present. "
-                "Wait for missing confirmations if they are part "
-                "of your trading plan."
-            )
-
-        else:
-            st.warning(
-                "Insufficient checklist confirmation. "
-                "Continue observing the chart."
-            )
-
-        # Risk reward display
-        st.subheader("Risk / Reward Summary")
-
-        r1, r2, r3 = st.columns(3)
-
-        r1.metric("Risk", f"{risk_points:.2f} points")
-        r2.metric("Potential Reward", f"{reward_points:.2f} points")
-        r3.metric("Risk : Reward", f"1 : {rr_ratio:.2f}")
-
-        if rr_ratio >= 2:
-            st.success("Risk/Reward is at least 1:2.")
-        else:
-            st.warning(
-                "Risk/Reward is below 1:2. Review your planned setup."
-            )
-
+    st.metric("Planned account risk", f"${risk_amount:.2f}")
+    if price_risk > 0:
+        st.metric("Price risk per unit", f"{price_risk:.2f}")
+        st.metric("Illustrative reward/risk", f"{reward / price_risk:.2f}:1")
         st.caption(
-            "This is a checklist, not a buy/sell signal. "
-            "A breakout can fail even when all items are checked. "
-            "No profit is guaranteed."
+            "Position size needs the instrument's contract specifications, "
+            "lot value, and fees. This is not a lot-size recommendation."
         )
+    else:
+        st.error("Entry and stop-loss must be different.")
 
 st.divider()
-
 st.caption(
-    "Trading Star Quant Lab | Educational prototype | "
-    "Manual inputs only | No live data"
+    "Trading Star Quant Lab | Educational decision-support prototype. "
+    "No guaranteed profits or automatic trade execution."
 )

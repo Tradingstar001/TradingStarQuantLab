@@ -24,6 +24,7 @@ page = st.sidebar.radio(
         "Stock Scanner",
         "Option Chain",
         "XAUUSD Gold Analysis",
+        "Candlestick Chart",
         "Risk Calculator"
     ]
 )

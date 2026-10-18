@@ -139,6 +139,49 @@ elif page == "Risk Calculator":
     else:
         st.error("Entry and stop-loss must be different.")
 
+elif page == "Candlestick Chart":
+    import plotly.graph_objects as go
+    import pandas as pd
+
+    st.header("⭐ Interactive Candlestick Chart")
+    st.warning("DEMO DATA ONLY — Live market prices are not connected.")
+
+    timeframe = st.selectbox(
+        "Timeframe",
+        ["1 Minute", "5 Minutes", "15 Minutes", "30 Minutes", "1 Hour", "4 Hours"]
+    )
+
+    df = pd.DataFrame({
+        "Candle": list(range(1, 11)),
+        "Open":  [100, 102, 101, 104, 103, 106, 105, 108, 107, 110],
+        "High":  [103, 104, 105, 106, 107, 108, 109, 110, 112, 113],
+        "Low":   [99, 100, 100, 102, 101, 104, 103, 106, 105, 108],
+        "Close": [102, 101, 104, 103, 106, 105, 108, 107, 110, 111],
+        "Volume": [120, 150, 180, 140, 220, 190, 250, 210, 280, 300]
+    })
+
+    fig = go.Figure(data=[
+        go.Candlestick(
+            x=df["Candle"],
+            open=df["Open"],
+            high=df["High"],
+            low=df["Low"],
+            close=df["Close"],
+            name="Demo"
+        )
+    ])
+
+    fig.update_layout(
+        title=f"Sample Candlestick Chart — {timeframe}",
+        xaxis_title="Candle Number",
+        yaxis_title="Demo Price",
+        xaxis_rangeslider_visible=False
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+    st.subheader("Volume")
+    st.bar_chart(df.set_index("Candle")["Volume"])
+
 st.divider()
 st.caption(
     "Trading Star Quant Lab | Educational decision-support prototype. "
